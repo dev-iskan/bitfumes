@@ -1,0 +1,42 @@
+use laravel scout and algolia:
+1 - composer require laravel/scout
+2 - php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider" :
+After installing Scout, you should publish the Scout configuration using the vendor:publish Artisan command.
+This command will publish the scout.php configuration file to your config directory
+3 - migrate users or any model you want to search, in this case users
+4- add this commands in model class:
+	use Laravel\Scout\Searchable;
+	use Searchable;
+
+5 - create alogolia account
+6 - composer require algolia/algoliasearch-client-php
+7 - add to model this function:
+  public function searchableAs()
+    {
+        return 'name';
+    }
+
+8 - add id and secret key to laravel scout.php config from site:
+application ID -id,
+Admin API key - secret
+
+9- then add new user and it should be visible on the site
+10 - php artisan scout:import "App\Post" this command allows us to import data to algolia
+11 - php artisan scout:flush "App\Post" and this command allows to remove data from algolia
+
+12 - next in route and controller we pass search key, and after that we should return all related models:
+Route::get('/search/{searchKey}', 'HomeController@search');
+
+public function search($searchKey){
+        $users = User::search($searchKey)->get();
+        return view('search', compact('users'));
+}
+
+@foreach($users as $user)
+    name: {{$user->name}}
+    <br>
+    email: {{$user->email}}
+    <br>
+    <br>
+    <br>
+@endforeach
