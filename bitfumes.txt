@@ -195,3 +195,49 @@ Customizing The Templates
 You can modify the HTML and plain-text template used by mail notifications by publishing the notification package's resources. After running this command, the mail notification templates will be located in the resources/views/vendor/notifications directory:
 
 php artisan vendor:publish --tag=laravel-notifications
+
+
+
+
+
+
+creating database notifications:
+php artisan notifications:table - create table for storing notifications
+
+then in notification we have to change via method to database:
+public function via($notifiable)
+    {
+        return ['database'];
+    }
+
+and we are going to work with toArray method:
+ public function toArray($notifiable)
+    {
+        return [
+            //here we can save data
+        ];
+    }
+
+
+in order to view our notifcations we can simple access properties of notifiable trait:
+public function notifications()
+{
+    return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
+}
+
+public function readNotifications()
+{
+    return $this->notifications()->whereNotNull('read_at');
+}
+
+public function unreadNotifications()
+{
+    return $this->notifications()->whereNull('read_at');
+}
+
+
+by the method markAsRead() we can make read notifications:
+Route::get('/markallasread', function (){
+    auth()->user()->unreadNotifications->markAsRead();
+    return back();
+})->name('markallasread');

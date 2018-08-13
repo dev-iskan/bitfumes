@@ -25,11 +25,19 @@ Route::get('/notification', function () {
 //    $when = now()->addSeconds(10);
 //    $user->notify((new \App\Notifications\TaskCompleted())->delay($when));
 
-    \Illuminate\Support\Facades\Notification::route('mail', 'taylor@example.com')
-        ->notify(new \App\Notifications\TaskCompleted());
+//    \Illuminate\Support\Facades\Notification::route('mail', 'taylor@example.com')
+//        ->notify(new \App\Notifications\TaskCompleted());
+
+        $user=\App\User::find(85);
+    $user->notify(new \App\Notifications\DatabaseNotification());
 
     return view('welcome');
 });
+
+Route::get('/markallasread', function (){
+    auth()->user()->unreadNotifications->markAsRead();
+    return back();
+})->name('markallasread');
 
 Route::get('/search/{searchKey}', 'HomeController@search');
 Auth::routes();
