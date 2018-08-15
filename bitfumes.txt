@@ -241,3 +241,32 @@ Route::get('/markallasread', function (){
     auth()->user()->unreadNotifications->markAsRead();
     return back();
 })->name('markallasread');
+
+
+
+
+
+
+Queue:
+QUEUE_DRIVER=database
+but before we need to create queue table:
+php artisan queue:table
+php artisan migrate
+php artisan queue:work - in order queue to work this should be working constantly
+
+
+after that we have to create job:
+php artisan make:job ProcessPodcast
+in the handle() method we will write logic:
+public function handle()
+{
+    Mail::to('bitfumes@gmail.com')->send(new SendEmailMailable());
+}
+
+after creating job we have to trigger job:
+Route::get('/sendmail', function (){
+        \App\Jobs\SendEmailJob::dispatch()->delay(now()->addSeconds(2));
+        return 'Email is sent properly';
+});
+
+and don't forget to run queue

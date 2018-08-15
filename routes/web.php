@@ -43,3 +43,9 @@ Route::get('/search/{searchKey}', 'HomeController@search');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::get('/sendmail', function (){
+        \App\Jobs\SendEmailJob::dispatch()->delay(now()->addSeconds(2));
+        return 'Email is sent properly';
+});
