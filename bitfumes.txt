@@ -270,3 +270,21 @@ Route::get('/sendmail', function (){
 });
 
 and don't forget to run queue
+
+
+
+
+
+
+Events:
+In order to create event and listener we can create array in EventsServiceProvide:
+  protected $listen = [
+    'App\Events\Event' => [
+        'App\Listeners\EventListener',
+    ],
+];
+
+After that when we define events and listener we run artisan console:
+php artisan event:generate
+
+then we can send any data through constructor to event, and handle it through event-listener in method handle()

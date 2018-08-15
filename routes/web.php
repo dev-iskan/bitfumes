@@ -49,3 +49,7 @@ Route::get('/sendmail', function (){
         \App\Jobs\SendEmailJob::dispatch()->delay(now()->addSeconds(2));
         return 'Email is sent properly';
 });
+
+Route::get('/event', function (){
+    event(new \App\Events\Event('hello world!'));
+});
